@@ -1,0 +1,1 @@
+self.addEventListener('fetch',e=>{e.respondWith(caches.open('dse-swing-ai-v2').then(c=>c.match(e.request).then(r=>r||fetch(e.request).then(x=>{c.put(e.request,x.clone());return x})))});

@@ -1,0 +1,9 @@
+{
+  "name": "DSE Swing AI",
+  "short_name": "DSE Swing AI",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#07111f",
+  "theme_color": "#0b1220",
+  "icons": []
+}
