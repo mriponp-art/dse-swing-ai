@@ -101,7 +101,19 @@ public final class DseDataAdapter {
     private static void putNum(JSONObject o,String k,Double v)throws Exception{if(v!=null)o.put(k,v);}
     private static String firstString(JSONObject o,String...keys){for(String k:keys){if(o.has(k)&&!o.isNull(k)){String s=String.valueOf(o.opt(k)).trim(); if(!s.isEmpty()&&!s.equalsIgnoreCase("null"))return s;}}return null;}
     private static Double firstNumber(JSONObject o,String...keys){for(String k:keys){if(!o.has(k)||o.isNull(k))continue; Object v=o.opt(k); if(v instanceof Number)return ((Number)v).doubleValue(); try{String s=String.valueOf(v).replace(",","").trim(); if(!s.isEmpty())return Double.parseDouble(s);}catch(Exception ignored){}}return null;}
-    private static String enc(String s)throws UnsupportedEncodingException{return java.net.URLEncoder.encode(s,StandardCharsets.UTF_8.name());}
+    private static String enc(String s) {
+    try {
+        return java.net.URLEncoder.encode(
+            s,
+            StandardCharsets.UTF_8.name()
+        );
+    } catch (UnsupportedEncodingException e) {
+        throw new IllegalStateException(
+            "UTF-8 encoding unavailable",
+            e
+        );
+    }
+}
     private static String httpGet(String urlString)throws IOException{HttpURLConnection c=null;try{c=(HttpURLConnection)new URL(urlString).openConnection();c.setRequestMethod("GET");c.setConnectTimeout(TIMEOUT_MS);c.setReadTimeout(TIMEOUT_MS);c.setUseCaches(false);c.setRequestProperty("Accept","application/json,text/html,*/*");c.setRequestProperty("User-Agent","DSE-Swing-AI-Personal/2.0");int code=c.getResponseCode();InputStream s=code>=200&&code<300?c.getInputStream():c.getErrorStream();if(s==null)throw new IOException("HTTP "+code);String body=readFully(s);if(code<200||code>=300)throw new IOException("HTTP "+code+": "+body);return body;}finally{if(c!=null)c.disconnect();}}
     private static String readFully(InputStream in)throws IOException{StringBuilder b=new StringBuilder();try(BufferedReader r=new BufferedReader(new InputStreamReader(in,StandardCharsets.UTF_8))){String x;while((x=r.readLine())!=null)b.append(x);}return b.toString();}
 }
